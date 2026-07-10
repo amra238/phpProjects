@@ -140,6 +140,8 @@
       <path value="$PROJECT_DIR$/my_project/vendor/theseer/tokenizer" />
       <path value="$PROJECT_DIR$/my_project/vendor/nikic/php-parser" />
       <path value="$PROJECT_DIR$/my_project/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/my_project/vendor/knplabs/knp-components" />
+      <path value="$PROJECT_DIR$/my_project/vendor/knplabs/knp-paginator-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3">

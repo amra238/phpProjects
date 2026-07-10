@@ -132,6 +132,8 @@
       <excludeFolder url="file://$MODULE_DIR$/my_project/vendor/twig/extra-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/my_project/vendor/twig/twig" />
       <excludeFolder url="file://$MODULE_DIR$/my_project/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/my_project/vendor/knplabs/knp-components" />
+      <excludeFolder url="file://$MODULE_DIR$/my_project/vendor/knplabs/knp-paginator-bundle" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
