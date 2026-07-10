@@ -1,0 +1,14 @@
+
+{{ form_start(form) }}
+    {{ form_errors(form) }}  Общие ошибки формы
+
+    {{ form_label(form.title) }}
+    {{ form_widget(form.title) }}
+    {{ form_errors(form.title) }}  Ошибки для title
+
+    {{ form_label(form.content) }}
+    {{ form_widget(form.content) }}
+    {{ form_errors(form.content) }}
+
+    {{ form_widget(form.save) }}
+{{ form_end(form) }}

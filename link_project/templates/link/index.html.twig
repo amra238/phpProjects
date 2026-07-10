@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Сокращение ссылок{% endblock %}
+
+{% block body %}
+    {% if app.user %}
+        <div style="text-align: right; padding: 10px;">
+            Здравствуйте, {{ app.user.userIdentifier }}
+            <a href="{{ path('app_logout') }}"><button>Выйти</button></a>
+        </div>
+    {% endif %}
+<h1>Сокращение ссылок</h1>
+
+    <p><a href="{{ path('app_add_link') }}"><button>Добавить новую ссылку</button></a></p>
+
+    {% for message in app.flashes('error') %}
+        <div style="color: red; margin-bottom: 10px;">{{ message }}</div>
+    {% endfor %}
+
+<h2>Список ссылок</h2>
+<table border="1" cellpadding="5" cellspacing="0" style="margin-top: 10px;">
+    <tr>
+        <th>Полная ссылка</th>
+        <th>Короткая ссылка</th>
+        <th>Статус</th>
+        <th>Создана</th>
+        <th>Последнее использование</th>
+        <th>Дата истечения</th>
+        <th>Одноразовая?</th>
+        <th>Переходов</th>
+        <th>Удалить</th>
+    </tr>
+    {% for link in links %}
+    <tr>
+        <td><a href="{{ link.fullUrl }}" target="_blank">{{ link.fullUrl|slice(0, 50) }}{% if link.fullUrl|length > 50 %}...{% endif %}</a></td>
+        <td><a href="{{ path('app_redirect', {code: link.shortCode}) }}" target="_blank">{{ absolute_url(path('app_redirect', {code: link.shortCode})) }}</a></td>
+        <td>
+            {% if not link.isLinkAlive %}
+                <span style="color: red;">недействительна</span>
+            {% else %}
+                <span style="color: green;">активна</span>
+            {% endif %}
+        </td>
+        <td>{{ link.createdAt|date('Y-m-d H:i') }}</td>
+        <td>{{ link.lastUsedAt ? link.lastUsedAt|date('Y-m-d H:i') : '—' }}</td>
+        <td>{{ link.expirationDate|date('Y-m-d H:i') }}</td>
+        <td>
+            {% if link.isOnetime %}
+                да
+            {% else %}
+                нет
+            {% endif %}
+        </td>
+        <td>{{ link.visitCount }}</td>
+        <td>
+            <form method="post" action="{{ path('app_delete', {id: link.id}) }}" style="display:inline;">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">Нет ссылок</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

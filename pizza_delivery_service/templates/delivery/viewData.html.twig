@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Результат заказа{% endblock %}
+
+{% block body %}
+    <h1>Заказ оформлен</h1>
+    <p>ID: {{ delivery.id }}</p>
+    <p>Цена: {{ delivery.totalPrice }}</p>
+    <p>Расстояние: {{ delivery.distance }}</p>
+    <p>Ресторан: {{ delivery.senderRestaurant ? delivery.senderRestaurant.name : 'Не найден' }}</p>
+{% endblock %}

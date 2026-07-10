@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+
+    {% endblock javascripts %}
+    <title>{% block title %}мой сайт{% endblock %}</title>
+</head>
+<body>
+<header>{% block header %}Шапка сайта{% endblock header %}</header>
+
+<main>
+    {% block body %}{% endblock body %}
+</main>
+
+<footer>{% block footer %}Подвал сайта © {{ "now"|date("Y") }}{% endblock footer %}</footer>
+
+</body>
+</html>

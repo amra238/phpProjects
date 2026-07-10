@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Добавить ссылку{% endblock %}
+
+{% block body %}
+    <h1>Добавить ссылку</h1>
+
+    <a href="{{ path('app_home') }}">К списку ссылок</a>
+
+    {{ form_start(form) }}
+    {{ form_row(form.fullUrl) }}
+    {{ form_row(form.isOneTime) }}
+    {{ form_row(form.expirationDate) }}
+    <button type="submit">Сохранить</button>
+    {{ form_end(form) }}
+{% endblock %}

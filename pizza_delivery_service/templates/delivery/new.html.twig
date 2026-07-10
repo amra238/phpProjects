@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Новый заказ{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Оформление доставки пиццы</h1>
+
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        {# Отключаем Turbo для этой формы #}
+        {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
+        <div class="mb-3">
+            {{ form_row(form.latitude) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.longitude) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Рассчитать доставку</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

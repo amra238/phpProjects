@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Главная страница{% endblock title %}
+
+{% block content %}
+    <h2>Добро пожаловать{{ username|capitalize|default('Гость')}}!</h2>
+    <p>Это контент главной страницы. {{ products[0]|lower }}</p>
+    {% if users|length > 0 %}
+        <p>Количество товаров: {{ products|length }}</p>
+        <ul>
+            {% for user in users %}
+                <li>{{ user|capitalize }}</li>
+                <br>
+            {%  endfor %}
+        </ul>
+    {% else %}
+        <p>пользователи отсутствуют.</p>
+    {% endif %}
+{% endblock %}
