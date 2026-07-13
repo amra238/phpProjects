@@ -7,17 +7,20 @@ use App\Entity\Point;
 use App\Entity\Restaurant;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use RuntimeException;
 
 class DeliveryService
 {
-    private Client $httpClient;
-    public function __construct(private string $apiKey,
-                                private EntityManagerInterface $entityManager)
-    {
-        $this->httpClient = new Client([
+    private ClientInterface $httpClient;
+
+    public function __construct(
+        private string $apiKey,
+        private EntityManagerInterface $entityManager,
+        ?ClientInterface $httpClient = null,
+    ) {
+        $this->httpClient = $httpClient ?? new Client([
             'base_uri' => 'https://api.openrouteservice.org/',
             'timeout' => 7.0,
             'verify' => false,
@@ -28,29 +31,29 @@ class DeliveryService
         ]);
     }
 
-    public function createCheapestDelivery(Point $deliveryPoint): Delivery
+    public function fillDeliveryData(Delivery $delivery): void
     {
+        $deliveryPoint = $delivery->getPointOfDelivery();
+
+        if (!$deliveryPoint) {
+            throw new RuntimeException('Точка доставки не указана');
+        }
+
         $restaurants = $this->getAllRestaurants();
 
         if (empty($restaurants)) {
-            throw new \RuntimeException('Ресстораны не найдены');
+            throw new RuntimeException('Рестораны не найдены');
         }
 
         $route = $this->getClosestRoute($restaurants, $deliveryPoint);
         $price = $this->calculateTotalPrice($route['distance'], 100, 0.06);
 
-        $delivery = new Delivery();
-        $delivery->setTotalPrice($price);
-        $delivery->setDistance($route['distance']);
+        $delivery->setTotalPrice((string) $price);
+        $delivery->setDistance((string) $route['distance']);
         $delivery->setSenderRestaurant($route['restaurant']);
-        $delivery->setPointOfDelivery($deliveryPoint);
-
-        $this->entityManager->persist($delivery);
-        $this->entityManager->flush();
-
-        return $delivery;
     }
-    public function getClosestRoute(array $restaurants, Point $targetPoint) : array
+
+    public function getClosestRoute(array $restaurants, Point $targetPoint): array
     {
         $minDistance = PHP_INT_MAX;
         $closestRestaurant = null;
@@ -66,7 +69,7 @@ class DeliveryService
             );
 
             try {
-                $response = $this->httpClient->get($url);
+                $response = $this->httpClient->request('GET', $url);
                 $data = json_decode($response->getBody()->getContents(), true);
                 $statusCode = $response->getStatusCode();
 
@@ -76,8 +79,7 @@ class DeliveryService
                     $minDistance = (float)$distanceInMetre;
                     $closestRestaurant = $restaurant;
                 }
-            }
-            catch (GuzzleException $e) {
+            } catch (GuzzleException $e) {
                 error_log('ORS ERROR: ' . $e->getMessage());
                 continue;
             }
@@ -93,15 +95,11 @@ class DeliveryService
         ];
     }
 
-    public function calculateTotalPrice(float $distance, float $basePrice, float $ratio) : float
+    public function calculateTotalPrice(float $distance, float $basePrice, float $ratio): float
     {
         return $basePrice + ($distance * $ratio);
     }
 
-
-    /**
-     * @return Restaurant[]
-     */
     public function getAllRestaurants(): array
     {
         return $this->entityManager->getRepository(Restaurant::class)->findAll();

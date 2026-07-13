@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Delivery;
 use App\Entity\Point;
 use App\Form\PointType;
-use App\Service\DeliveryService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeliveryController extends AbstractController
 {
     public function __construct(
-        private DeliveryService $deliveryService,
-    ) {
-    }
+        private EntityManagerInterface $entityManager,
+    ) {}
 
     #[Route('/delivery/new', name: 'delivery_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
@@ -26,7 +26,11 @@ class DeliveryController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $delivery = $this->deliveryService->createCheapestDelivery($point);
+                $delivery = new Delivery();
+                $delivery->setPointOfDelivery($point);
+
+                $this->entityManager->persist($delivery);
+                $this->entityManager->flush();
 
                 return $this->render('delivery/viewData.html.twig', [
                     'delivery' => $delivery,

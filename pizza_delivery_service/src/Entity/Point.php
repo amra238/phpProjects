@@ -6,7 +6,7 @@ use App\Repository\PointRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PointRepository::class)]
+#[ORM\Entity]
 class Point
 {
     #[ORM\Id]
